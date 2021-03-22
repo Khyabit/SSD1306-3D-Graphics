@@ -46,6 +46,10 @@ public:
         z = a.z;
         this->w = w;
     }
+
+    float4 operator *(float a) {
+        return float4(x*a, y*a, z*a, w*a);
+    }
 };
 
 
@@ -168,20 +172,24 @@ Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, 
 
 
 float3 coords[] = {
-    float3(-1, 1, 10),
-    float3(-1,-1, 20),
-    float3( 1,-1, 10),
-    float3( 1, 1, 10)
+    float3(-1, 1, 1),
+    float3(-1,-1, 1),
+    float3( 1,-1, 1),
+    float3( 1, 1, 1),
+    float3(-1, 1,-1),
+    float3(-1,-1,-1),
+    float3( 1,-1,-1),
+    float3( 1, 1,-1),
 };
 
 float3 eye = float3(0,0,0);
-float rot = 0;
+float yrot = 0, xrot = 0;
 
 void setup() {
 
     float4x4 projection = perspectiveProjection(radians(90), 1.0, 0.1, 1000.0);
     float4x4 view = lookAt(float3(0,0,0), float3(0,0,1), float3(0,1,0));
-    float4x4 model = identity(10);
+    float4x4 model = identity(50);
 
     float4x4 MVP = projection * view * model;
 
@@ -219,29 +227,41 @@ void loop() {
     float4x4 MVP = projection * view * model;
 
     float4 screenPositions[] = {
-        MVP * float4(coords[0], 1.0),
-        MVP * float4(coords[1], 1.0),
-        MVP * float4(coords[2], 1.0),
-        MVP * float4(coords[3], 1.0)
+        MVP * float4(coords[0], 1.0) * 2,
+        MVP * float4(coords[1], 1.0) * 2,
+        MVP * float4(coords[2], 1.0) * 2,
+        MVP * float4(coords[3], 1.0) * 2,
+        MVP * float4(coords[4], 1.0) * 2,
+        MVP * float4(coords[5], 1.0) * 2,
+        MVP * float4(coords[6], 1.0) * 2,
+        MVP * float4(coords[7], 1.0) * 2
     };
 
     eye = normalize(float3(
-        cos(radians(0)) * cos(radians(rot)),
-        sin(radians(0)),
-        cos(radians(0)) * sin(radians(rot))
+        cos(radians(xrot)) * cos(radians(yrot)),
+        sin(radians(xrot)),
+        cos(radians(xrot)) * sin(radians(yrot))
       ));
 
-    rot+=2;
+    yrot+=5;
+    xrot+=2;
 
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay(); 
 
-    display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y+32)), int(floor(screenPositions[1].x)+64), int(floor(screenPositions[1].y)+32), WHITE);
-    display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y)+32), int(floor(screenPositions[2].x)+64), int(floor(screenPositions[2].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y)+32), int(floor(screenPositions[1].x)+64), int(floor(screenPositions[1].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[3].x)+64), int(floor(screenPositions[3].y)+32), int(floor(screenPositions[2].x)+64), int(floor(screenPositions[2].y)+32), WHITE);
     display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y)+32), int(floor(screenPositions[3].x)+64), int(floor(screenPositions[3].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y)+32), int(floor(screenPositions[4].x)+64), int(floor(screenPositions[4].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[5].x)+64), int(floor(screenPositions[5].y)+32), int(floor(screenPositions[4].x)+64), int(floor(screenPositions[4].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[7].x)+64), int(floor(screenPositions[7].y)+32), int(floor(screenPositions[4].x)+64), int(floor(screenPositions[4].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[1].x)+64), int(floor(screenPositions[1].y)+32), int(floor(screenPositions[5].x)+64), int(floor(screenPositions[5].y)+32), WHITE);
     display.drawLine(int(floor(screenPositions[1].x)+64), int(floor(screenPositions[1].y)+32), int(floor(screenPositions[2].x)+64), int(floor(screenPositions[2].y)+32), WHITE);
-    display.drawLine(int(floor(screenPositions[2].x)+64), int(floor(screenPositions[2].y)+32), int(floor(screenPositions[3].x)+64), int(floor(screenPositions[3].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[6].x)+64), int(floor(screenPositions[6].y)+32), int(floor(screenPositions[5].x)+64), int(floor(screenPositions[5].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[6].x)+64), int(floor(screenPositions[6].y)+32), int(floor(screenPositions[2].x)+64), int(floor(screenPositions[2].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[6].x)+64), int(floor(screenPositions[6].y)+32), int(floor(screenPositions[7].x)+64), int(floor(screenPositions[7].y)+32), WHITE);
+    display.drawLine(int(floor(screenPositions[3].x)+64), int(floor(screenPositions[3].y)+32), int(floor(screenPositions[7].x)+64), int(floor(screenPositions[7].y)+32), WHITE);
     
     display.display();
-    delay(10);
+    delay(1);
 }

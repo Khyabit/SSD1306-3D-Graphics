@@ -99,7 +99,7 @@ public:
     float4 operator *(float4 a) {
         return float4(
           row0.x * a.x + row0.y * a.y + row0.z * a.z + row0.w * a.w,
-        -(row1.x * a.x + row1.y * a.y + row1.z * a.z + row1.w * a.w),
+          row1.x * a.x + row1.y * a.y + row1.z * a.z + row1.w * a.w,
           row2.x * a.x + row2.y * a.y + row2.z * a.z + row2.w * a.w,
           row3.x * a.x + row3.y * a.y + row3.z * a.z + row3.w * a.w
         );

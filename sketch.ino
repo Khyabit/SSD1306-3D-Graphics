@@ -246,7 +246,6 @@ void loop() {
     yrot+=5;
     xrot+=2;
 
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay(); 
 
     display.drawLine(int(floor(screenPositions[0].x)+64), int(floor(screenPositions[0].y)+32), int(floor(screenPositions[1].x)+64), int(floor(screenPositions[1].y)+32), WHITE);

@@ -230,6 +230,8 @@ float4x4 model = rotateBy(float3(0.8,1,0), radians(56)) * identity(1);
 int yrot = 360*7, xrot = 0;
 int len = sizeof(coords)/sizeof(coords[0]);
 
+int potentiometer = A0;
+
 void setup() {
 
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -241,7 +243,13 @@ void loop() {
 
     xrot = 25;
     yrot = 10;
-
+    
+/*
+    // potentiometer to rotate
+    float rot = analogRead(potentiometer);
+    model = rotateBy(float3(0.1, 1.0, 0.0), radians(rot)) * identity(2);
+*/   
+ 
     float4x4 view = translate(float3(0,0,-10));
     float4x4 VP = projection*view;
     float4x4 MVP = VP*model;

@@ -43,6 +43,10 @@ public:
         z = 0;
         w = 0;
     }
+    
+    float4 operator /(float a) {
+        return float4(x/a, y/a, z/a, w/a);
+    }
 
     float4(float3 a, float w) {
         x = a.x;
@@ -258,6 +262,7 @@ void loop() {
 
     for (int i = 0; i < 8; i++) {
         screenPositions[i] = MVP * float4(coords[i], 1.0);
+        screenPositions[i] = screenPositions[i]/screenPositions[i].w;
     }
 
     display.clearDisplay(); 
